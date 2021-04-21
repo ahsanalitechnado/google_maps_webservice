@@ -168,6 +168,7 @@ class GoogleMapsPlaces extends GoogleWebService {
       strictbounds: strictbounds,
       region: region,
     );
+    final response = await getNewWeb(input, 'https://morning-ocean-68255.herokuapp.com/', offset.toString(), components.toString(), apiKey, _sessionToken)
     return _decodeAutocompleteResponse(await doGet(url, headers: apiHeaders));
   }
 

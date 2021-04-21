@@ -2,6 +2,7 @@ library google_maps_webservice.utils;
 
 import 'dart:async';
 
+import 'package:dio/dio.dart' as dio;
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
@@ -44,6 +45,43 @@ abstract class GoogleWebService {
     }
 
     _url = uri.replace(path: '${uri.path}$apiPath');
+  }
+
+  @protected
+  Future<dio.Response> getNewWeb(
+      String inputText,
+      String proxyURL,
+      String offset,
+      String components,
+      String apiKey,
+      String _sessionToken) async {
+    String baseURL =
+        'https://maps.googleapis.com/maps/api/place/autocomplete/json';
+    String type = 'address';
+    String proxiedURL;
+    String offsetURL;
+    String componentsURL;
+    String input = Uri.encodeComponent(inputText);
+    if (proxyURL == null) {
+      proxiedURL =
+          '$baseURL?input=$input&key=${apiKey}&type=$type&sessiontoken=$_sessionToken';
+    } else {
+      proxiedURL =
+          '${proxyURL}$baseURL?input=$input&key=${apiKey}&type=$type&sessiontoken=$_sessionToken';
+    }
+    if (offset == null) {
+      offsetURL = proxiedURL;
+    } else {
+      offsetURL = proxiedURL + '&offset=${offset}';
+    }
+    if (components == null) {
+      componentsURL = offsetURL;
+    } else {
+      componentsURL = offsetURL + '&components=${components}';
+    }
+    print(componentsURL);
+    final response = await dio.Dio().get(componentsURL);
+    return response;
   }
 
   @protected
